@@ -4,7 +4,7 @@ def compute_payoff(action, dice_state):
     return PAYOFF_LS[action][1](dice_state)
 
 def ones_payoff(dice_state):
-    return dice_state[0]
+    return 1.0*dice_state[0]
 
 def twos_payoff(dice_state):
     return 2.0*dice_state[1]
@@ -22,46 +22,51 @@ def sixes_payoff(dice_state):
     return 6.0*dice_state[5]
 
 def three_of_a_kind_payoff(dice_state):
-    if 3 in dice_state or 4 in dice_state or 5 in dice_state:
-        return float(sum((i+1)*count for i, count in enumerate(dice_state)))
-    else:
-        return 0.0
+    score = 0.0
+
+    for n_dice, v in reversed(list(zip(dice_state, range(1,7)))):
+        if n_dice >= 3.0:
+            score = v * 3.0
+            break
+    
+    return score
 
 def four_of_a_kind_payoff(dice_state):
-    if 4 in dice_state or 5 in dice_state:
-        return float(sum((i+1)*count for i, count in enumerate(dice_state)))
-    else:
-        return 0.0
+    score = 0.0
+
+    for n_dice, v in reversed(list(zip(dice_state, range(1,7)))):
+        if n_dice >= 4.0:
+            score = v * 4.0
+            break
+    
+    return score
 
 def full_house_payoff(dice_state):
-    if 3 in dice_state and 2 in dice_state:
-        return 25.0
-    else:
-        return 0.0
+    score = 0.0
+    found_3 = False
+    found_2 = False
+    for n_dice, v in reversed(list(zip(dice_state, range(1,7)))):
+        if n_dice >= 3:
+            score += v*3
+            found_3 = True
+        elif n_dice >= 2:
+            score += v*2
+            found_2 = True
+        if found_2 and found_3:
+            return score
+    return 0.0
 
 def small_straight_payoff(dice_state):
-    is_valid = False
-    straight_count = 0
-    for count in dice_state:
-        if count > 0:
-            straight_count += 1
-            if straight_count >= 4:
-                is_valid = True
-                break
-        else:
-            straight_count = 0
-    if is_valid: 
-        return 30.0
+    if dice_state == (1,1,1,1,1,0): # TODO fixme!
+        return 15.0
     else:
         return 0.0
-
 
 def large_straight_payoff(dice_state):
-    if dice_state == (0,1,1,1,1,1) or dice_state == (1,1,1,1,1,0):
-        return 40.0
+    if dice_state == (0,1,1,1,1,1):
+        return 20.0
     else:
         return 0.0
-
 
 def yahtzee_payoff(dice_state):
     if 5 in dice_state:
