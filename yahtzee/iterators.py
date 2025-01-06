@@ -3,7 +3,9 @@ iterators.py
 
 Some useful iterators
 """
+import functools
 import itertools as it
+from payoffs import PAYOFF_LS
 
 def _rec_dice_state_iter(vec):
 
@@ -18,13 +20,19 @@ def _rec_dice_state_iter(vec):
 
 """
 Iterate through unique dice states.
+Iterator was surprisingly slow - since we make the same calls over and over, just cache this.  It's not that much memory anyway.
 """
+@functools.lru_cache
 def dice_state_iter(n_dice, n_sides):
+
+    dice_states = []
 
     vec = [n_dice] + [0]*(n_sides-1)
 
     for vec in _rec_dice_state_iter(vec):
-        yield tuple(vec)
+        dice_states.append(tuple(vec))
+
+    return dice_states
        
 
 """
@@ -44,10 +52,10 @@ the possible combinations of filled/empty
 column entries.
 """
 def game_state_iter():
-
-    for r in range(14):
-        for idx_tuple in it.combinations(range(13), r):
-            state = [True]*13
+    n_items_to_tick = len(PAYOFF_LS)
+    for r in range(n_items_to_tick+1):
+        for idx_tuple in it.combinations(range(n_items_to_tick), r):
+            state = [True]*n_items_to_tick
             for idx in idx_tuple:
                 state[idx] = False
             yield tuple(state)

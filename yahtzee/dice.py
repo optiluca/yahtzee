@@ -5,7 +5,7 @@ Code related to the representation of (fair) dice
 and their probabilities.
 """
 
-
+import functools
 from math import factorial, prod
 
 DICE_PROB_CACHE = {}
@@ -50,7 +50,11 @@ def _dice_state_probability(state_tuple):
 """
 Compute (and cache) the probability of rolling 
 a given set of dice.
+
+Performance optimization - cache it
+
 """
+@functools.lru_cache
 def dice_state_probability(state_vec):
 
     state_tuple = tuple(state_vec)

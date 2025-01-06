@@ -7,9 +7,13 @@ from os import path
 
 
 # Get precomputed game state values
-import pkg_resources
-PRECOMP_PATH = pkg_resources.resource_filename("yahtzee","game_state_values.pkl")
-PRECOMP_STATE_VALUES = pkl.load(open(PRECOMP_PATH, "rb"))
+WORKING_DIR = path.dirname(path.abspath(__file__))
+PRECOMP_PATH = path.join(WORKING_DIR,"game_state_values.pkl")
+if path.exists(PRECOMP_PATH):
+    PRECOMP_STATE_VALUES = pkl.load(open(PRECOMP_PATH, "rb"))
+else:
+    print("No precomputed game tree available.")
+    PRECOMP_STATE_VALUES = None
 
 
 class OptimalPlayer:

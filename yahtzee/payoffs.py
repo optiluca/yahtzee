@@ -21,6 +21,29 @@ def fives_payoff(dice_state):
 def sixes_payoff(dice_state):
     return 6.0*dice_state[5]
 
+def one_pair_payoff(dice_state):
+    score = 0.0
+
+    for n_dice, v in reversed(list(zip(dice_state, range(1, 7)))):
+        if n_dice >= 2.0:
+            score = v * 2.0
+            break
+
+    return score
+
+def two_pairs_payoff(dice_state):
+    score = 0.0
+    n_pairs = 0
+
+    for n_dice, v in reversed(list(zip(dice_state, range(1, 7)))):
+        if n_dice >= 2.0:
+            score += v * 2.0
+            n_pairs+=1
+            if n_pairs == 2:
+                break
+
+    return score
+
 def three_of_a_kind_payoff(dice_state):
     score = 0.0
 
@@ -84,6 +107,8 @@ PAYOFF_LS = [("ones", ones_payoff),
              ("fours", fours_payoff),
              ("fives", fives_payoff),
              ("sixes", sixes_payoff),
+             ("one pair", one_pair_payoff),
+             ("two pairs", two_pairs_payoff),
              ("three of a kind", three_of_a_kind_payoff),
              ("four of a kind", four_of_a_kind_payoff),
              ("full house", full_house_payoff),

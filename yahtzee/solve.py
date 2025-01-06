@@ -64,7 +64,11 @@ def solve_game():
 
     game_state_values = {}
 
-    for i, game_state in enumerate(it.game_state_iter()):
+    game_states = list(it.game_state_iter())
+
+    print(f"Identified {len(game_states)} game_states!  Processing...")
+
+    for i, game_state in enumerate(game_states):
 
         # Handle the case where all boxes have been filled
         if i == 0:
@@ -83,6 +87,10 @@ def solve_game():
         
         print(i, game_state, "{}".format(game_state_value))
 
+        """
+        if i == 4:
+            print("PROFILING")
+            break
+        """
+        
     return game_state_values
-
-
